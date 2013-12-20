@@ -1,0 +1,18 @@
+<!doctype html>
+<title></title>
+{% if original %}
+  <img class="image original" src="{{original}}">
+{% endif %}
+
+{% if bin %}
+  <img class="image bin" src="{{bin}}">
+{% endif %}
+{% if heat %}
+  <img class="image heat" src="{{heat}}">
+{% endif %}
+{% if entropy %}
+  <img class="image entropy" src="{{entropy}}">
+{% endif %}
+{% if defect %}
+  <h1>Defect Count: {{defect}}</h1>
+{% endif %}
