@@ -69,9 +69,10 @@ def pixel_counter(binarized_image, black=0):
 
 def rebinarizeImage(path, imagename, threshold):
     image = Image.open(os.path.join(path, imagename))
-    binarize(image, threshold)                 # Binarizes the now grayscale image
-    defect_count = pixel_counter(image)       # Counts the black pixels in the image and returns them to defect_count
-    image.save(os.path.join(path, "bin_" + imagename))
+    binarized_image = rgb_to_gray_level(image)        # Converts the image that was just imported to grayscale
+    binarize(binarized_image, threshold)                 # Binarizes the now grayscale image
+    defect_count = pixel_counter(binarized_image)       # Counts the black pixels in the image and returns them to defect_count
+    binarized_image.save(os.path.join(path, "bin_" + imagename))
     binfile = "/uploads/bin_" + imagename
 
     jsondict = {"image":binfile,"count":defect_count}

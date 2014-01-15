@@ -59,6 +59,9 @@ def uploaded_file(filename,defect):
 def update_image_threshold():
     filename = request.args.get('filename')
     threshold = request.args.get('threshold')
+    threshold = int(threshold)
+    print type(threshold)
+    print threshold
     new_threshold = rebinarizeImage(UPLOAD_FOLDER, filename,threshold)
 
     return jsonify(new_threshold)
