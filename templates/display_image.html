@@ -1,18 +1,63 @@
 <!doctype html>
+<head>
+<!-- this is for the slider and ajax -->
+ <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script>
+  $(function() {
+    $( "#slider" ).slider({
+        // geneirc jquery ui slider parameters
+      value:100,
+      min: 0,
+      max: 255,
+      step: 1,
+      slide: function( event, ui ) {
+          //this updates the label on the slider to show what the threshold is
+        $( "#threshold" ).val( ui.value );
+      },
+      stop: function( event, ui ) {
+          //when the slider stops moving run all this shit, hit that /get url with the new threshold parameters
+
+          $.getJSON('/get', {
+            filename: "{{ original }}",
+            threshold: $('#threshold').val()
+          }, function(data) {
+            //with the return data we do this
+             d = new Date();
+             $(".bin").attr("src", data.image + "?" + d.getTime()); //swaps out the image with the updates image, the timestamp we tag on the end breaks browser cache so we ensure it shows new image
+             console.log(data)
+          });
+        }
+    });
+    $( "#threshold" ).val( $( "#slider" ).slider( "value" ) );
+  });
+</script>
+<style>
+    #slider{
+        width:200px;
+    }
+</style>
+</head>
 <title></title>
 {% if original %}
-  <img class="image original" src="{{original}}">
+  <img class="image original" src="/uploads/{{original}}">
 {% endif %}
 
 {% if bin %}
-  <img class="image bin" src="{{bin}}">
+  <img class="image bin" src="/uploads/{{bin}}">
 {% endif %}
 {% if heat %}
-  <img class="image heat" src="{{heat}}">
+  <img class="image heat" src="/uploads/{{heat}}">
 {% endif %}
 {% if entropy %}
-  <img class="image entropy" src="{{entropy}}">
+  <img class="image entropy" src="/uploads/{{entropy}}">
 {% endif %}
 {% if defect %}
+  <p>
+  <label for="threshold">Threshold:</label>
+  <input type="text" id="threshold" style="border:0; color:#f6931f; font-weight:bold;">
+  </p>
+  <div id="slider"></div>
   <h1>Defect Count: {{defect}}</h1>
 {% endif %}

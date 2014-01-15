@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 from flask import Flask, render_template, jsonify, redirect, url_for, request, send_from_directory
 from werkzeug import secure_filename
-from imagemanipulationfunctions import binarizeImage, entropyImage, heatmapImage
+from imagemanipulationfunctions import binarizeImage, entropyImage, heatmapImage, rebinarizeImage
 
 
 #this is bullshit to get the right path for Windows
@@ -48,11 +48,20 @@ def upload():
 #this is our display page, where the results are shown
 @app.route('/show/<filename>/<defect>')
 def uploaded_file(filename,defect):
-    original = 'http://127.0.0.1:5000/uploads/' + filename
-    bin = 'http://127.0.0.1:5000/uploads/bin_' + filename
-    heat = 'http://127.0.0.1:5000/uploads/heat_' + filename
-    entropy = 'http://127.0.0.1:5000/uploads/ent_' + filename
+    original = filename
+    bin = 'bin_' + filename
+    heat = 'heat_' + filename
+    entropy = 'ent_' + filename
     return render_template('display_image.html', original=original, bin=bin, heat=heat, entropy=entropy, defect=defect)
+
+
+@app.route('/get')
+def update_image_threshold():
+    filename = request.args.get('filename')
+    threshold = request.args.get('threshold')
+    new_threshold = rebinarizeImage(UPLOAD_FOLDER, filename,threshold)
+
+    return jsonify(new_threshold)
 
 #this is some shit to let the server display images from the /uploads folder
 @app.route('/uploads/<filename>')
